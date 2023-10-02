@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Web</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Karla:wght@200;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="wrapper">
+        <div class="logo"><p>Dedytobing</p></div>
+        <div class="menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="project.html">Portfolio</a></li>
+            <li><a href="article.html">Articles</a></li>
+          </ul>
+        </div>
+        <div class="download-cv">
+          <a href="asset/CV DEDY LUMBANTOBING.pdf">Download CV</a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="about">
+      <div class="container-about">
+        <h1 class="mb-40">
+          - ARTICLES
+          <br />
+          <span class="color-primary2"> My several articles </span>
+        </h1>
+        <div class="row" id="article-list"></div>
+      </div>
+    </section>
+
+    <div id="copyright">
+      <div>Dedy Tobing &copy; 2023. All Rights Reserved.</div>
+    </div>
+
+    <script>
+      const API_KEY = "ff9148131cdb4277b204c9aaa51ae746";
+      const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&category=technology&apiKey=${API_KEY}`;
+      const articleList = document.getElementById("article-list");
+
+      async function getArticles() {
+        try {
+          const response = await fetch(apiUrl);
+          const { status, articles, message } = await response.json();
+
+          if (status === "ok") {
+            articles.forEach((article) => {
+              const articleDiv = document.createElement("div");
+              articleDiv.classList.add("item");
+              articleDiv.innerHTML = `
+                            <div class="card">
+                                <div class="card-background">
+                                    <img src="${article.urlToImage}" alt="${
+                article.title
+              }" />
+                                </div>
+                                <div class="card-content">
+                                    <h3>${truncateText(article.title, 50)}</h3>
+                                    <p>${truncateText(
+                                      article.description,
+                                      60
+                                    )}</p>
+                                    <a href="${
+                                      article.url
+                                    }" class="btn btn-secondary btn-full text-center" target="_blank">Read More</a>
+                                </div>
+                            </div>
+                        `;
+              articleList.appendChild(articleDiv);
+            });
+          } else {
+            console.error("Gagal mengambil artikel:", message);
+          }
+        } catch (error) {
+          console.error("Terjadi kesalahan:", error);
+        }
+      }
+
+      function truncateText(text, maxLength) {
+        return text.length > maxLength
+          ? text.substring(0, maxLength) + "..."
+          : text;
+      }
+
+      window.addEventListener("load", getArticles);
+    </script>
+  </body>
+</html>
